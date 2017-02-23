@@ -1,0 +1,20 @@
+version: '2'
+
+services:
+  app:
+    restart: always
+    image: "arukmn/node-image"
+    tty: true
+    links:
+      - redis
+    depends_on:
+      - redis
+    command: /bin/bash
+  redis:
+    image: redis
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./redis-data:/data
+    command: redis-server --appendonly yes
