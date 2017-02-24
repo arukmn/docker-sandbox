@@ -4,7 +4,7 @@
 $ cd nodejs
 
 ### create/get images
-$ docker build -t arukmn/node-image .
+$ docker build -t arukmn/node-image .  
 $ docker pull redis
 
 ### launch containers

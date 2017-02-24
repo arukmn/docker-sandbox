@@ -7,8 +7,12 @@ services:
     tty: true
     links:
       - redis
+      - mysql
+      - mongo
     depends_on:
       - redis
+      - mysql
+      - mongo
     command: /bin/bash
   redis:
     image: redis
@@ -18,3 +22,22 @@ services:
     volumes:
       - ./redis-data:/data
     command: redis-server --appendonly yes
+  mysql:
+    image: mysql:5.6
+    environment:
+      MYSQL_ROOT_PASSWORD: "password"
+      MYSQL_DATABASE: "my_database"
+    #  port開放の状況を知りたかったら docker ps でPORTS列を参照
+    #   - "3306:3306" => 0.0.0.0:3306:3306と同義(127.0.0.1でも接続できた)
+    #   - 127.0.0.1:3306:3306(127.0.0.1のIPアドレスのみに限定)
+    ports:
+      - "3306:3306"
+    expose:
+      - "3306"
+    volumes:
+      - ./mysql-data:/var/lib/mysql
+  mongo:
+    image: mongo
+    restart: always
+    volumes:
+      - ./mongo-data:/data/db
