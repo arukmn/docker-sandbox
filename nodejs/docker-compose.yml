@@ -1,28 +1,36 @@
 version: '2'
 
 services:
+  datastore:
+    restart: "no"
+    build: ./datastore
+    volumes:
+      - ~/.docker-store/redis-data:/data
+      - ~/.docker-store/mongo-data:/data/db
+      - ~/.docker-store/mysql-data:/var/lib/mysql
   app:
     restart: always
-    image: "arukmn/node-image"
+    build: ./app
     tty: true
+    container_name: app
     links:
       - redis
-      - mysql
+      - "mysql:db"
       - mongo
     depends_on:
       - redis
       - mysql
       - mongo
+    # app dir is parent
     volumes:
-      - .:/usr/app
-    command: /bin/bash
+      - ../:/usr/app
   redis:
     image: redis
     restart: always
     ports:
       - "6379:6379"
-    volumes:
-      - ./redis-data:/data
+    volumes_from:
+      - datastore
     command: redis-server --appendonly yes
   mysql:
     image: mysql:5.6
@@ -31,12 +39,12 @@ services:
       MYSQL_DATABASE: "my_database"
     ports:
       - "3306:3306"
-    expose:
-      - "3306"
-    volumes:
-      - ./mysql-data:/var/lib/mysql
+    volumes_from:
+      - datastore
   mongo:
     image: mongo
     restart: always
-    volumes:
-      - ./mongo-data:/data/db
+    ports:
+      - "27017:27017"
+    volumes_from:
+      - datastore
