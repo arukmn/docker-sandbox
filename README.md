@@ -1,4 +1,4 @@
-# Start Create Development Environment
+# Create Development Environment
 
 ## nodejs
 $ cd nodejs
@@ -19,3 +19,9 @@ $ docker exec -it CONTAINER_ID /bin/bash
 ### confirm redis host
 $ host redis
 
+
+## registry
+
+http://localhost:8888/
+
+$ docker-compose up -d
